@@ -1,4 +1,10 @@
 package com.shotaroi.librarymanagementsystem.repository;
 
-public class CategoryRepository {
+import com.shotaroi.librarymanagementsystem.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface CategoryRepository extends JpaRepository<Category, Long>  {
+        Optional<Category> findByNameIgnoreCase(String name);
 }
