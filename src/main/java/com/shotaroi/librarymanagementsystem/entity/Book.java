@@ -17,6 +17,9 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false, unique = true)
+    private String isbn;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
