@@ -2,35 +2,37 @@ package com.shotaroi.librarymanagementsystem.controller;
 
 import com.shotaroi.librarymanagementsystem.dto.BookCreateRequest;
 import com.shotaroi.librarymanagementsystem.dto.BookResponse;
+import com.shotaroi.librarymanagementsystem.dto.BookUpdateRequest;
 import com.shotaroi.librarymanagementsystem.repository.BookRepository;
 import com.shotaroi.librarymanagementsystem.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
 public class BookController {
+
     private final BookService bookService;
 
     @PostMapping
-    public BookResponse create(@Valid @RequestBody BookCreateRequest req) {
-        return bookService.create(req);
-    }
-
-    @GetMapping
-    public Page<BookResponse> list (
-            @RequestParam(required = false) String title,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<?> create(
+            @Valid @RequestBody BookCreateRequest req
     ) {
-        return bookService.list(title, page, size);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(bookService.create(req));
     }
 
-    @GetMapping("/{id}")
-    public BookResponse getById(@PathVariable Long id) {
-        return bookService.getById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(
+            @PathVariable Long id,
+            @Valid @RequestBody BookUpdateRequest req
+    ) {
+        return ResponseEntity.ok(bookService.update(id, req));
     }
 }
