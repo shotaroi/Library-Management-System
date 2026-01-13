@@ -5,8 +5,10 @@ import lombok.*;
 
 @Entity
 @Table(name = "authors")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Author {
 
@@ -17,4 +19,3 @@ public class Author {
     @Column(nullable = false)
     private String fullName;
 }
-
