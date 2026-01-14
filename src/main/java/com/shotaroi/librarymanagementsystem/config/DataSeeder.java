@@ -53,11 +53,11 @@ public class DataSeeder implements CommandLineRunner {
         // AUTHORS
         // =====================
         Author orwell = new Author();
-        orwell.setFullName("George Orwell");
+        orwell.setName("George Orwell");
         authorRepository.save(orwell);
 
         Author rowling = new Author();
-        rowling.setFullName("J.K. Rowling");
+        rowling.setName("J.K. Rowling");
         authorRepository.save(rowling);
 
         // =====================
