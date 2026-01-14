@@ -34,15 +34,4 @@ public class GlobalExceptionHandler {
     public ApiError handleBadRequest(BadRequestException ex, HttpServletRequest req) {
         return new ApiError(Instant.now(), 400, "Bad Request", ex.getMessage(), req.getRequestURI());
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
-        String msg = ex.getBindingResult().getFieldErrors().stream()
-                .findFirst()
-                .map(err -> err.getField() + " " + err.getDefaultMessage())
-                .orElse("Validation error");
-
-        return new ApiError(Instant.now(), 400, "Validation Error", msg, req.getRequestURI());
-    }
 }
