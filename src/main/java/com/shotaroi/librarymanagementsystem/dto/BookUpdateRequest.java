@@ -8,7 +8,8 @@ public record BookUpdateRequest(
 
         Long authorId,
 
+        Long categoryId,
+
         @Size(max = 20, message = "ISBN must be <= 20 characters")
         String isbn
-) {
-}
+) {}
