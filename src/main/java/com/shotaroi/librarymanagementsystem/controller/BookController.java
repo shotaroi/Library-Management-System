@@ -3,12 +3,10 @@ package com.shotaroi.librarymanagementsystem.controller;
 import com.shotaroi.librarymanagementsystem.dto.BookCreateRequest;
 import com.shotaroi.librarymanagementsystem.dto.BookResponse;
 import com.shotaroi.librarymanagementsystem.dto.BookUpdateRequest;
-import com.shotaroi.librarymanagementsystem.repository.BookRepository;
 import com.shotaroi.librarymanagementsystem.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +20,9 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ResponseEntity<BookResponse> create(@Valid @RequestBody BookCreateRequest req) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.create(req));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<BookResponse> update(@PathVariable Long id, @Valid @RequestBody BookUpdateRequest req) {
-        return ResponseEntity.ok(bookService.update(id, req));
+    public ResponseEntity<BookResponse> create(@Valid @RequestBody BookCreateRequest request) {
+        BookResponse created = bookService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/{id}")
@@ -36,18 +30,27 @@ public class BookController {
         return ResponseEntity.ok(bookService.getById(id));
     }
 
+    // GET /api/books?page=0&size=10&sort=title,asc
     @GetMapping
-    public ResponseEntity<Page<BookResponse>> list(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String q
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        if (q != null && !q.isBlank()) {
-            return ResponseEntity.ok(bookService.searchByTitle(q, pageable));
-        }
+    public ResponseEntity<Page<BookResponse>> list(Pageable pageable) {
         return ResponseEntity.ok(bookService.list(pageable));
+    }
+
+    // GET /api/books/search?title=harry&page=0&size=10
+    @GetMapping("/search")
+    public ResponseEntity<Page<BookResponse>> searchByTitle(
+            @RequestParam String title,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(bookService.searchByTitle(title, pageable));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BookResponse> update(
+            @PathVariable Long id,
+            @Valid @RequestBody BookUpdateRequest request
+    ) {
+        return ResponseEntity.ok(bookService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
@@ -56,4 +59,3 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 }
-
