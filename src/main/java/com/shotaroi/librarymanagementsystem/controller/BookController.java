@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,18 +33,22 @@ public class BookController {
 
     // GET /api/books?page=0&size=10&sort=title,asc
     @GetMapping
-    public ResponseEntity<Page<BookResponse>> list(Pageable pageable) {
+    public ResponseEntity<Page<BookResponse>> list(@PageableDefault(size = 10, sort = "title") Pageable pageable) {
         return ResponseEntity.ok(bookService.list(pageable));
     }
 
     // GET /api/books/search?title=harry&page=0&size=10
     @GetMapping("/search")
     public ResponseEntity<Page<BookResponse>> searchByTitle(
-            @RequestParam String title,
+            @RequestParam(required = false) String title,
             Pageable pageable
     ) {
+        if (title == null || title.isBlank()) {
+            return ResponseEntity.ok(bookService.list(pageable));
+        }
         return ResponseEntity.ok(bookService.searchByTitle(title, pageable));
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<BookResponse> update(
