@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -45,6 +46,10 @@ public class BookServiceImpl implements BookService {
                 .category(category)
                 .build();
 
+        if (bookRepository.existsByIsbn(req.isbn())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "ISBN already exists: " + req.isbn());
+        }
+
         Book saved = bookRepository.save(book);
         return toResponse(saved);
     }
@@ -56,6 +61,13 @@ public class BookServiceImpl implements BookService {
                         HttpStatus.NOT_FOUND,
                         "Book not found with id " + id
                 ));
+
+        if (req.isbn() != null && !req.isbn().equals(book.getIsbn())) {
+            if (bookRepository.existsByIsbn(req.isbn())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "ISBN already exists: " + req.isbn());
+            }
+            book.setIsbn(req.isbn());
+        }
 
         if (req.title() != null) {
             book.setTitle(req.title());
@@ -113,6 +125,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll(pageable).map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<BookResponse> searchByTitle(String query, Pageable pageable) {
         return bookRepository.findByTitleContainingIgnoreCase(query, pageable).map(this::toResponse);
