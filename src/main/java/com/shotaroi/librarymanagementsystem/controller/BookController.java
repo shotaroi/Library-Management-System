@@ -25,7 +25,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d+}")
     public ResponseEntity<BookResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.getById(id));
     }
