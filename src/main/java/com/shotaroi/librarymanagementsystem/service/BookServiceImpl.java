@@ -135,6 +135,7 @@ public class BookServiceImpl implements BookService {
         return new BookResponse(
                 book.getId(),
                 book.getTitle(),
+                book.getIsbn(),
                 book.getAuthor() != null ? book.getAuthor().getName() : null,
                 book.getCategory() != null ? book.getCategory().getName() : null,
                 book.isAvailable()
