@@ -10,6 +10,7 @@ public final class BookMapper {
         return new BookResponse(
                 book.getId(),
                 book.getTitle(),
+                book.getIsbn(),
                 book.getAuthor().getName(),
                 book.getCategory().getName(),
                 book.isAvailable()
