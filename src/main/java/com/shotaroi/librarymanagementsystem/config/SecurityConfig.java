@@ -2,6 +2,7 @@ package com.shotaroi.librarymanagementsystem.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -11,19 +12,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF for APIs (important for POST/PUT/DELETE)
                 .csrf(csrf -> csrf.disable())
-
-                // Disable default login form
                 .formLogin(form -> form.disable())
-
-                // Disable logout endpoint
                 .logout(logout -> logout.disable())
 
-                // Authorization rules
+                // simplest: Basic Auth
+                .httpBasic(basic -> {})
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll() // allow API access
-                        .anyRequest().permitAll()               // allow everything else for now
+                        // public reads
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+
+                        // protect writes
+                        .requestMatchers(HttpMethod.POST, "/api/books/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT,  "/api/books/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/api/books/**").authenticated()
+
+                        // everything else
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
