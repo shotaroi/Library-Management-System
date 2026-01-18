@@ -22,7 +22,7 @@ public class SecurityConfig {
 
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll() // 👈 allow API access
+                        .requestMatchers("/api/**").permitAll() // allow API access
                         .anyRequest().permitAll()               // allow everything else for now
                 );
 
