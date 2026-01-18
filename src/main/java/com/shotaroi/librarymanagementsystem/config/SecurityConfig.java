@@ -14,12 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.shotaroi.librarymanagementsystem.security.JwtAuthFilter;
 
 @Configuration
 public class SecurityConfig {
-    private final JwtAuthFilter jwtAuthFilter;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -42,9 +39,7 @@ public class SecurityConfig {
 
                         // everything else
                         .anyRequest().permitAll()
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
+                );
 
         return http.build();
     }
@@ -57,16 +52,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("admin")
-                        .password(encoder.encode("admin"))
-                        .roles("ADMIN")
-                        .build()
-        );
     }
 
 }
