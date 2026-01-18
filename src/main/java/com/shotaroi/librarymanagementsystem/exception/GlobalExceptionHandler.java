@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -34,4 +35,15 @@ public class GlobalExceptionHandler {
     public ApiError handleBadRequest(BadRequestException ex, HttpServletRequest req) {
         return new ApiError(Instant.now(), 400, "Bad Request", ex.getMessage(), req.getRequestURI());
     }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handle(ResponseStatusException ex) {
+        return ResponseEntity.status(ex.getStatusCode()).body(
+                Map.of(
+                        "status", ex.getStatusCode().value(),
+                        "error", ex.getReason()
+                )
+        );
+    }
+
 }
