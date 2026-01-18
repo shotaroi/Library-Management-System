@@ -1,15 +1,16 @@
 package com.shotaroi.librarymanagementsystem.controller;
 
 import com.shotaroi.librarymanagementsystem.dto.LoginRequest;
-import com.shotaroi.librarymanagementsystem.dto.LoginResponse;
-import com.shotaroi.librarymanagementsystem.security.JwtService;
-import jakarta.validation.Valid;
+import com.shotaroi.librarymanagementsystem.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,19 +18,16 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final com.shotaroi.librarymanagementsystem.security.JwtService jwtService;
 
     @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest req) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(req.username(), req.password())
-            );
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
-        }
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest req) {
 
-        String token = jwtService.generateToken(req.username());
-        return new LoginResponse(token);
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(req.username(), req.password())
+        );
+
+        String token = jwtService.generateToken(auth.getName()); // username
+        return ResponseEntity.ok(new TokenResponse(token));
     }
 }
