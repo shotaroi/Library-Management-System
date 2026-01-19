@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/loans")
+@RequestMapping("api/loans")
 @RequiredArgsConstructor
 public class LoanController {
 
@@ -33,10 +32,6 @@ public class LoanController {
         if (!book.isAvailable()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Book is not available");
         }
-
-        book.setAvailable(true); // <-- if you use available=true meaning available, set false here
-        // IMPORTANT: Most systems mean available=true => available to borrow.
-        // When borrowed, you should set available=false:
         book.setAvailable(false);
 
         Loan loan = new Loan();
