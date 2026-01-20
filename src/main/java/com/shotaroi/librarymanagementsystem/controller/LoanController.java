@@ -2,6 +2,7 @@ package com.shotaroi.librarymanagementsystem.controller;
 
 import com.shotaroi.librarymanagementsystem.dto.LoanCreateRequest;
 import com.shotaroi.librarymanagementsystem.dto.LoanResponse;
+import com.shotaroi.librarymanagementsystem.repository.LoanRepository;
 import com.shotaroi.librarymanagementsystem.service.LoanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.List;
 public class LoanController {
 
     private final LoanService loanService;
+    private final LoanRepository loanRepository;
 
     @PostMapping
     public ResponseEntity<LoanResponse> borrow(@Valid @RequestBody LoanCreateRequest req) {
@@ -31,5 +33,10 @@ public class LoanController {
     @GetMapping
     public ResponseEntity<List<LoanResponse>> list() {
         return ResponseEntity.ok(loanService.list());
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<List<LoanResponse>> listActive() {
+        return ResponseEntity.ok(loanService.listActive());
     }
 }
