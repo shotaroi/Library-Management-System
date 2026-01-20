@@ -80,6 +80,15 @@ public class LoanServiceImpl implements LoanService {
         return loanRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<LoanResponse> listActive() {
+        return loanRepository.findAll().stream()
+                .filter(Loan::isActive)
+                .map(this::toResponse)
+                .toList();
+    }
+
     private LoanResponse toResponse(Loan loan) {
         Book book = loan.getBook();
         return new LoanResponse(
