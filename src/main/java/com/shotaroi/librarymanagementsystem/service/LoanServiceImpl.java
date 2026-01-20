@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +72,12 @@ public class LoanServiceImpl implements LoanService {
 
         Loan saved = loanRepository.save(loan);
         return toResponse(saved);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<LoanResponse> list() {
+        return loanRepository.findAll().stream().map(this::toResponse).toList();
     }
 
     private LoanResponse toResponse(Loan loan) {
