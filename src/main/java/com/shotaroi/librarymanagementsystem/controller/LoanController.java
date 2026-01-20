@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/loans")
 @RequiredArgsConstructor
@@ -24,5 +26,10 @@ public class LoanController {
     @PostMapping("/{id}/return")
     public ResponseEntity<LoanResponse> returnBook(@PathVariable Long id) {
         return ResponseEntity.ok(loanService.returnBook(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LoanResponse>> list() {
+        return ResponseEntity.ok(loanService.list());
     }
 }
