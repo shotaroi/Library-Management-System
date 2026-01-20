@@ -30,7 +30,11 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .logout(logout -> logout.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/api/**",
+                                "/loans/**",
+                                "/authors/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
