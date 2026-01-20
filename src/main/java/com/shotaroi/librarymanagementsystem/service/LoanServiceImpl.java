@@ -24,7 +24,7 @@ public class LoanServiceImpl implements LoanService {
     @Transactional
     @Override
     public LoanResponse borrow(LoanCreateRequest req) {
-        Book book = bookRepository.findById(req.bookId())
+        Book book = bookRepository.findByIdForUpdate(req.bookId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
         // Rule: cannot borrow if already borrowed
