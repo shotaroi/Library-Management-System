@@ -12,5 +12,5 @@ public interface LoanService {
     LoanResponse borrow(LoanCreateRequest req);
     LoanResponse returnBook(Long loanId);
     Page<LoanResponse> list(Pageable pageable);
-    List<LoanResponse> listActive();
+    Page<LoanResponse> listActive(Pageable pageable);
 }
