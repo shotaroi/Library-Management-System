@@ -7,6 +7,8 @@ import com.shotaroi.librarymanagementsystem.entity.Loan;
 import com.shotaroi.librarymanagementsystem.repository.BookRepository;
 import com.shotaroi.librarymanagementsystem.repository.LoanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,13 +78,13 @@ public class LoanServiceImpl implements LoanService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<LoanResponse> list() {
-        return loanRepository.findAll().stream().map(this::toResponse).toList();
+    public Page<LoanResponse> list(Pageable pageable) {
+        return loanRepository.findAll(pageable).map(this::toResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LoanResponse> listActive() {
+    public Page<LoanResponse> listActive() {
         return loanRepository.findAll().stream()
                 .filter(Loan::isActive)
                 .map(this::toResponse)
