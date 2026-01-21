@@ -84,11 +84,10 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<LoanResponse> listActive() {
-        return loanRepository.findAll().stream()
-                .filter(Loan::isActive)
-                .map(this::toResponse)
-                .toList();
+    public Page<LoanResponse> listActive(Pageable pageable) {
+        return loanRepository
+                .findByReturnedAtIsNull(pageable)
+                .map(this::toResponse);
     }
 
     private LoanResponse toResponse(Loan loan) {
