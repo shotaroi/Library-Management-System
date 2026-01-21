@@ -2,23 +2,21 @@ package com.shotaroi.librarymanagementsystem.controller;
 
 import com.shotaroi.librarymanagementsystem.dto.LoanCreateRequest;
 import com.shotaroi.librarymanagementsystem.dto.LoanResponse;
-import com.shotaroi.librarymanagementsystem.repository.LoanRepository;
 import com.shotaroi.librarymanagementsystem.service.LoanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/loans")
+@RequestMapping("/api/loans")
 @RequiredArgsConstructor
 public class LoanController {
 
     private final LoanService loanService;
-    private final LoanRepository loanRepository;
 
     @PostMapping
     public ResponseEntity<LoanResponse> borrow(@Valid @RequestBody LoanCreateRequest req) {
@@ -31,12 +29,12 @@ public class LoanController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LoanResponse>> list() {
-        return ResponseEntity.ok(loanService.list());
+    public ResponseEntity<Page<LoanResponse>> list(Pageable pageable) {
+        return ResponseEntity.ok(loanService.list(pageable));
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<LoanResponse>> listActive() {
-        return ResponseEntity.ok(loanService.listActive());
+    public ResponseEntity<Page<LoanResponse>> listActive(Pageable pageable) {
+        return ResponseEntity.ok(loanService.listActive(pageable));
     }
 }
