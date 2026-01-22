@@ -11,10 +11,28 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatus(
+            ResponseStatusException ex,
+            HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", Instant.now());
+        body.put("status", status.value());
+        body.put("error", status.getReasonPhrase());
+        body.put("message", ex.getReason());
+        body.put("path", request.getRequestURI());
+
+        return ResponseEntity.status(status).body(body);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
@@ -35,15 +53,6 @@ public class GlobalExceptionHandler {
     public ApiError handleBadRequest(BadRequestException ex, HttpServletRequest req) {
         return new ApiError(Instant.now(), 400, "Bad Request", ex.getMessage(), req.getRequestURI());
     }
-
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, Object>> handle(ResponseStatusException ex) {
-        return ResponseEntity.status(ex.getStatusCode()).body(
-                Map.of(
-                        "status", ex.getStatusCode().value(),
-                        "error", ex.getReason()
-                )
-        );
-    }
+    
 
 }
