@@ -53,6 +53,6 @@ public class GlobalExceptionHandler {
     public ApiError handleBadRequest(BadRequestException ex, HttpServletRequest req) {
         return new ApiError(Instant.now(), 400, "Bad Request", ex.getMessage(), req.getRequestURI());
     }
-    
+
 
 }
