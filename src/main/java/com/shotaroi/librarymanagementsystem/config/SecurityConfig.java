@@ -34,7 +34,11 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/**",
                                 "/loans/**",
-                                "/authors/**").permitAll()
+                                "/authors/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/actuator/health/**", "/actuator/info").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
